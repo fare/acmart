@@ -116,7 +116,6 @@ options))
   ;; NB: see cssxml, cssdesc, terms, keywords, set-top-matter below
 
   [acm-journal (pretitle) "acmJournal" (short-name)]
-  [acm-conference (pretitle) "acmConference" ([short-name] name date venue)]
   [title (pretitle) "title" ([short-title] full-title)]
   [subtitle (pretitle) "subtitle" (subtitle)]
 
@@ -162,13 +161,16 @@ options))
 
   [copyright-year (pretitle) "copyrightyear" (x)] ;; defaults to acm-year
 
-  ;;[abstract (pretitle) "abstract"]
   [teaser-figure (pretitle) "teaserfigure"]
 
   [received (pretitle) "received" ([stage] date)])
 
-;;XXX ignore for now
-(define-syntax-rule (abstract . x) '()) (provide abstract)
+(define (abstract . abstract-)
+  (nest
+   (pretitle)
+   (in-latex-environment "abstract")
+   (decode-content abstract-)))
+(provide abstract)
 
 ;; Don't let Scribble encode the email, or it will turn - into {-}
 (define (email email-)
@@ -216,9 +218,10 @@ options))
     (latex-command/m
      "settopmatter"
      (separated-list ", "
-      (f "printccs" printccs)
+      (f "printcss" printccs) ;; !!!!! TYPO in acmart v1.25 !!!!
       (f "printacmref" printacmref)
       (f "printfolios" printfolios)))))
+(provide set-top-matter)
 
 (define (authorinfo author- #:orcid (orcid- #f) (affiliation- '()) (email- #f))
   (list
@@ -228,7 +231,8 @@ options))
    (when email- (email email-))))
 
 (define (conferenceinfo #:short-name (short-name #f) name date venue)
-  (acm-conference short-name name date venue))
+  (pretitle
+   (latex-command "acmConference" short-name name (raw-mode date) venue)))
 
 ;; abstract has to be before the title
 ;; but there's got to be a better way to do it...
@@ -267,6 +271,8 @@ options))
 (define colbibnumber-style (make-style "Autocolbibnumber" autobib-style-extras))
 (define colbibentry-style (make-style "acmartAutocolbibentry" autobib-style-extras))
 
+
+;;; Bibliographic style, as an alternative to number-style
 (define acmart-style
   (new
    (class object%
@@ -279,7 +285,8 @@ options))
      (define/public (get-group-sep) "; ")
      (define/public (get-item-sep) ", ")
      (define/public (render-citation date-cite i) date-cite)
-     (define/public (render-author+dates author dates) (list* author " " dates))
+     (define/public (render-author+dates author dates)
+       (list* author " " dates))
      (define (make-label i)
        (string-append "autobiblab:" (number->string i)))
      (define/public (bibliography-line i e)

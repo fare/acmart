@@ -1,4 +1,5 @@
 #lang racket
+;; -*- Scheme -*-
 (require racket/port scribble/core scribble/decode)
 
 (provide (all-defined-out))
@@ -48,7 +49,7 @@
 
 ;; Call a LaTeX command with a single mandatory argument
 (define (latex-command/m name . args)
-  (latex-command #f name args))
+  (latex-command name #f args))
 
 ;; Call a LaTeX command with several mandatory arguments
 (define (latex-command/mm name . args)
@@ -60,16 +61,10 @@
 
 ;; Use a LaTeX environment
 (define (in-latex-environment envname . content)
-  (make-compound-paragraph
-   null-style
-   (append
-    (list (make-paragraph
-           raw-style
-           (list (latex-command/mm "begin" envname) "\n")))
-    content
-    (list (make-paragraph
-           raw-style
-           (list "\n" (latex-command/mm "end" envname) "\n"))))))
+  (list
+   (raw-mode (latex-command/mm "begin" envname) "\n")
+   content
+   (list (raw-mode "\n" (latex-command/mm "end" envname) "\n"))))
 
 ;; Define a LaTeX wrapper function
 (define-syntax define-latex-wrapper
@@ -135,7 +130,8 @@
 ;;; Magic nest macro
 (define-syntax nest
   (syntax-rules ()
-    [(nest () y z ...) (nest y z ...)]
+    [(nest) #f]
+    [(nest () x ...) (nest x ...)]
     [(nest (x ...) y z ...) (x ... (nest y z ...))]
     [(nest x) x]))
 

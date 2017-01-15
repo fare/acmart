@@ -2,7 +2,8 @@ acmart
 ======
 
 This package provides support for scribble to target the
-[2017 ACM Master Article Template](http://www.acm.org/publications/proceedings-template).
+[2017 ACM Master Article Template](http://www.acm.org/publications/proceedings-template),
+LaTeX class `acmart.cls` v1.25.
 
 Its current state is very preliminary --- not fully working
 (notably, no effort was spent on the HTML backend), and
