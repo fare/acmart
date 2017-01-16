@@ -28,6 +28,9 @@ The valid values for @racketid{#:format} are:
 More commands are available, that mimic those in the LaTeX class,
 as documented in < http://www.acm.org/binaries/content/assets/publications/consolidated-tex-template/acmart.pdf >.
 
+For an example article that uses this package, see @hyperlink["https://github.com/fare/asdf2017"]{Building Portable Common Lisp Applications with ASDF 3.3}.
+
+
 THIS PACKAGE IS A WORK IN PROGRESS AND
 THE REST OF THIS MANUAL IS NOT UP TO DATE.
 
