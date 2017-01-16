@@ -8,8 +8,8 @@
 ;; - tables don't use the ACM's special commands
 
 (require
- "download.rkt"
- "latex-utils.rkt"
+ "acmart/download.rkt"
+ "acmart/latex-utils.rkt"
  racket/class
  racket/port
  scribble/base scribble/decode
@@ -22,7 +22,7 @@
  (for-syntax racket/base racket/syntax))
 
 (provide (all-from-out scribble/base)
-         (all-from-out "latex-utils.rkt")
+         (all-from-out "acmart/latex-utils.rkt")
          (except-out (all-from-out scribble/doclang)
                      -#%module-begin)
          (rename-out [--#%module-begin #%module-begin])
