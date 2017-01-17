@@ -207,9 +207,9 @@ options))
   [bottom-stuff () "bottomstuff"])
 
 (define (terms . x)
-  (latex-command/mm "terms" (apply comma-separated x)))
+  (pretitle (latex-command/mm "terms" x)))
 (define (keywords . x)
-  (latex-command/mm "keywords" (apply comma-separated x)))
+  (pretitle (latex-command/mm "keywords" x)))
 
 (define (set-top-matter #:printccs printccs
                         #:printacmref printacmref
@@ -244,10 +244,11 @@ options))
        (define name* (gensym 'name))
        #'(begin
            (require (rename-in module [doc name*]))
-           (in-latex-environment
-            "abstract"
-            (for/list ([p (in-list (part-blocks name*))])
-              (pretitle (paragraph-content p))))))]))
+           (pretitle
+            (in-latex-environment
+             "abstract"
+             (for/list ([p (in-list (part-blocks name*))])
+               (pretitle (paragraph-content p)))))))]))
 
 ;; NB: Use tool at http://dl.acm.org/ccs.cfm to generate a ccsxml block
 ;; including invocatiosn of ccsdesc.
@@ -255,7 +256,7 @@ options))
   (pretitle-raw
    (raw-mode (list "\\begin{CCSXML}\n" content "\n\\end{CCSXML}\n"))))
 (define (ccsdesc n . content)
-  (latex-command "ccsdesc" (if n (number->string n) '()) content))
+  (pretitle (latex-command "ccsdesc" (if n (number->string n) '()) content)))
 
 
 ;; Bibliography setup
