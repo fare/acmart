@@ -87,6 +87,7 @@
 \PassOptionsToPackage{usenames,dvipsnames}{color}
 \documentclass~a{acmart}
 \bibliographystyle{plain}
+\PassOptionsToPackage{warn}{textcomp}
 FORMAT
 options))
    (collection-file-path "style.tex" "scribble" "acmart")
@@ -272,7 +273,7 @@ options))
 (define bib-single-style (make-style "AutoBibliography" autobib-style-extras))
 (define bibentry-style (make-style "Autobibentry" autobib-style-extras))
 (define colbibnumber-style (make-style "Autocolbibnumber" autobib-style-extras))
-(define colbibentry-style (make-style "acmartAutocolbibentry" autobib-style-extras))
+(define colbibentry-style (make-style "Autocolbibentry" autobib-style-extras))
 
 
 ;;; Bibliographic style, as an alternative to number-style
