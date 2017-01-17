@@ -4,48 +4,86 @@
 ;; Provides helpers for downloading acmart style files
 ;; (mostly taken from the lipics package)
 
-(require sha
-         file/unzip
-         net/url
-         racket/file
-         racket/port
-         racket/system)
+(require
+ file/unzip
+ net/url
+ racket/file
+ racket/port
+ racket/system
+ sha)
 
-(provide acmart-class-path
-         acm-bibtex-style-path
+(provide acmart-cls-path
+         acmart-bst-path
          download-acmart-files)
 
-(define acmart-url  "http://www.acm.org/binaries/content/assets/publications/consolidated-tex-template/acmart.zip")
-;;(define acmart-url  "file:///home/fare/Downloads/acmart.zip")
-(define acmart-hash "364212a42f31941a5946352df3cf2ae73582b725b03d997e43e462e4c320c897")
+(define acmart-url
+  (let ((base (string-append "https://raw.githubusercontent.com/"
+                             "borisveytsman/acmart/"
+                             "d21923a0301a8f741cb8e8911d069e340acee76a" "/")))
+    (λ (x) (string-append base x))))
+
+(define acmart-ins-url (acmart-url "acmart.ins"))
+(define acmart-ins-sha256
+  "adb36b225c6686bc7c2d491682a17a515025a5bee594535d9dcf5d5f4a436065")
+(define acmart-dtx-url (acmart-url "acmart.dtx"))
+(define acmart-dtx-sha256
+  "f87a03c0af8c92fcdc07e1ab71204b00ef3dce5d8ca4a090854a02c9e6cca90e")
+(define acmart-bst-url (acmart-url "ACM-Reference-Format.bst"))
+(define acmart-bst-sha256
+  "7334f30e2e4356fad8acefad68b107bc7e9d08f5cbc95dc67402ab83e9af6a76")
+(define acmart-cls-sha256
+  "ec78c7c4244eb6dd444ea5e0943652b2598b85dcbf79cea11ad32aa6c66eaafa")
+
+(define (file-sha256 path)
+  (with-input-from-file path
+    (λ () (sha256 (port->bytes (current-input-port))))))
+
+(define (file-exists-and-of-hash? path hash)
+  (and (file-exists? path)
+       (equal? hash (bytes->hex-string (file-sha256 path)))))
 
 (define acmart-base-path
   (build-path (find-system-path 'addon-dir) "acmart-style-files"))
-(define acmart-class-path (build-path acmart-base-path "acmart/acmart.cls"))
-(define acm-bibtex-style-path (build-path acmart-base-path "acmart/ACM-Reference-Format.bst"))
+(define (acmart-path p) (build-path acmart-base-path p))
+
+(define acmart-ins-path (acmart-path "acmart.ins"))
+(define acmart-dtx-path (acmart-path "acmart.dtx"))
+(define acmart-cls-path (acmart-path "acmart.cls"))
+(define acmart-bst-path (acmart-path "ACM-Reference-Format.bst"))
+
+(define (download-file url path)
+  (call-with-output-file path #:exists 'replace
+    (λ (out)
+      (call/input-url (string->url url) get-pure-port
+                      (λ (in) (copy-port in out))))))
+
+(define (check-hash path expected-hash description)
+  (unless (file-exists? path)
+    (error 'check-hash "file ~a doesn't exist" path))
+  (let ((actual-hash (bytes->hex-string (file-sha256 path))))
+    (unless (equal? expected-hash actual-hash)
+      (error 'check-hash "file ~a ~a doesn't have expected SHA256 ~a but ~a"
+             path (apply format description) expected-hash actual-hash))))
+
+(define (download-file-check-hash url path hash)
+  (download-file url path)
+  (check-hash path hash `("as downloaded from ~a" ,url)))
 
 ;; Download acmart class file to the add-on directory
 (define (download-acmart-files)
-  (unless (and (file-exists? acmart-class-path)
-               (file-exists? acm-bibtex-style-path))
-    (define tmp (make-temporary-file))
+  (unless (and (file-exists-and-of-hash? acmart-cls-path acmart-cls-sha256)
+               (file-exists-and-of-hash? acmart-bst-path acmart-bst-sha256))
     (displayln (format "Downloading class file via ~a" acmart-url))
-    (define out (open-output-file tmp #:exists 'truncate))
-    (call/input-url (string->url acmart-url)
-                    get-pure-port
-                    (λ (in) (copy-port in out)))
-    (close-output-port out)
-    (define hash
-      (with-input-from-file tmp
-        (λ () (sha256 (port->bytes (current-input-port))))))
-    (unless (equal? (bytes->hex-string hash) acmart-hash)
-      (raise-arguments-error 'scribble/acmart
-                             "Invalid SHA256 hash for acmart tarball"
-                             "expected" acmart-hash
-                             "given" (bytes->hex-string hash)))
-    ;; Don't make the directory until we have a valid download
     (make-directory* acmart-base-path)
-    (unzip tmp (make-filesystem-entry-reader #:dest acmart-base-path))
+    (download-file-check-hash acmart-ins-url acmart-ins-path acmart-ins-sha256)
+    (download-file-check-hash acmart-dtx-url acmart-dtx-path acmart-dtx-sha256)
+    (download-file-check-hash acmart-bst-url acmart-bst-path acmart-bst-sha256)
     ;; Invoke the Makefile in that directory...
-    (parameterize ([current-directory (build-path acmart-base-path "acmart")])
-      (system "make" #:set-pwd? #t))))
+    (parameterize ([current-directory acmart-base-path])
+      (system "pdflatex acmart.ins" #:set-pwd? #t))
+    (check-hash acmart-cls-path acmart-cls-sha256
+                '("as compiled from source"))
+    (for-each delete-file
+              (list acmart-ins-path
+                    acmart-dtx-path
+                    (acmart-path "acmart.log")))))

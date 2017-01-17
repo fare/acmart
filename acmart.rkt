@@ -90,7 +90,7 @@
 FORMAT
 options))
    (collection-file-path "style.tex" "scribble" "acmart")
-   (list acmart-class-path acm-bibtex-style-path)
+   (list acmart-cls-path acmart-bst-path)
    #f))
 
 (define-syntax extract-formal-argument
@@ -215,12 +215,13 @@ options))
                         #:printacmref printacmref
                         #:printfolios printfolios)
   (let ([f (λ (x v) (list x "=" (if v "true" "false")))])
-    (latex-command/m
-     "settopmatter"
-     (separated-list ", "
-      (f "printcss" printccs) ;; !!!!! TYPO in acmart v1.25 !!!!
-      (f "printacmref" printacmref)
-      (f "printfolios" printfolios)))))
+    (pretitle
+     (latex-command/m
+      "settopmatter"
+      (separated-list ", "
+       (f "printccs" printccs)
+       (f "printacmref"    printacmref)
+       (f "printfolios" printfolios))))))
 (provide set-top-matter)
 
 (define (authorinfo author- #:orcid (orcid- #f) (affiliation- '()) (email- #f))
