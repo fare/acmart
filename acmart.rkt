@@ -214,13 +214,13 @@ options))
 (define (set-top-matter #:printccs printccs
                         #:printacmref printacmref
                         #:printfolios printfolios)
-  (let ([f (λ (x v) (list x "=" (if v "true" "false")))])
-    (pretitle
-     (latex-command/m
-      "settopmatter"
-      (separated-list ", "
+  (pretitle
+   (latex-command/m
+    "settopmatter"
+    (let ([f (λ (x v) (list x "=" (if v "true" "false")))])
+      (comma-separated
        (f "printccs" printccs)
-       (f "printacmref"    printacmref)
+       (f "printacmref" printacmref)
        (f "printfolios" printfolios))))))
 (provide set-top-matter)
 
