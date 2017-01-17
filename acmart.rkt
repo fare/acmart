@@ -256,7 +256,8 @@ options))
   (pretitle-raw
    (raw-mode (list "\\begin{CCSXML}\n" content "\n\\end{CCSXML}\n"))))
 (define (ccsdesc n . content)
-  (pretitle (latex-command "ccsdesc" (if n (number->string n) '()) content)))
+  (pretitle (latex-command "ccsdesc"
+                           (if n (number->string n) '()) (raw-mode content))))
 
 
 ;; Bibliography setup
