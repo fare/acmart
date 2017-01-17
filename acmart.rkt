@@ -84,10 +84,10 @@
    doc
    (string->bytes/utf-8 (format #<<FORMAT
 %% Scribble needs these options, so provide before acmart
+\PassOptionsToPackage{warn}{textcomp}
 \PassOptionsToPackage{usenames,dvipsnames}{color}
 \documentclass~a{acmart}
 \bibliographystyle{plain}
-\PassOptionsToPackage{warn}{textcomp}
 FORMAT
 options))
    (collection-file-path "style.tex" "scribble" "acmart")
