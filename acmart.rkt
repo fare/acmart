@@ -91,7 +91,7 @@
           (frob "format" format 'manuscript possible-formats
                 (λ (name val) (symbol->string val)))
           (flag "review" review #f)
-          (flag "natbib" natbib #t)
+          (flag "natbib" natbib #f)
           (flag "anonymous" anonymous #f)
           (flag "authorversion" authorversion #f)))])
     (if (null? opts) "" (flatten-text "[" opts "]"))))
@@ -105,6 +105,8 @@
 \PassOptionsToPackage{usenames,dvipsnames}{color}
 \documentclass~a{acmart}
 \bibliographystyle{plain}
+\let\Footnote\undefined
+\let\captionwidth\undefined
 FORMAT
 options))
    (collection-file-path "style.tex" "scribble" "acmart")
@@ -134,7 +136,7 @@ options))
   ;; NB: see cssxml, cssdesc, terms, keywords, set-top-matter below
 
   [acm-journal (pretitle) "acmJournal" (short-name)]
-  [title (pretitle) "title" ([short-title] full-title)]
+  ;[title (pretitle) "title" ([short-title] full-title)]
   [subtitle (pretitle) "subtitle" (subtitle)]
 
   ;; Author information
