@@ -48,6 +48,16 @@
           (loop #'rest flags)]
          [(((~datum format) type:str) . rest)
           (loop #'rest (hash-set flags 'format (string->symbol (syntax-e #'type))))]
+         [((~datum screen) . rest)
+          (loop #'rest (hash-set flags 'screen #t))]
+         [((~datum review) . rest)
+          (loop #'rest (hash-set flags 'review #t))]
+         [((~datum annonymous) . rest)
+          (loop #'rest (hash-set flags 'annonymous #t))]
+         [((~datum authorversion) . rest)
+          (loop #'rest (hash-set flags 'authorversion #t))]
+         [((~datum natbib) . rest)
+          (loop #'rest (hash-set flags 'natbib #t))]
          [body
           (quasisyntax/loc stx
             (-#%module-begin doc (post-process #,(acmart-options flags))
@@ -61,8 +71,8 @@
   (define format (hash-ref options 'format 'manuscript))
   (define screen (hash-ref options 'screen #f))
   (define review (hash-ref options 'review #f))
-  (define natbib (hash-ref options 'natbib #t))
-  (define anonymous (hash-ref options 'anonymouse #f))
+  (define natbib (hash-ref options 'natbib #f))
+  (define anonymous (hash-ref options 'anonymous #f))
   (define authorversion (hash-ref options 'authorversion #f))
   (letrec
       ([frob (λ (name val default acceptable printer)
