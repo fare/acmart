@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 ;; based heavily on acmsmall, itself based heavily on lipics
 
@@ -18,8 +18,10 @@
  scribble/private/defaults
  scribble/html-properties scribble/latex-properties
  setup/main-collects
- setup/collects
- (for-syntax racket/base racket/syntax))
+ (for-syntax "acmart/latex-utils.rkt"
+             syntax/parse
+             racket/base
+             racket/syntax))
 
 (provide (all-from-out scribble/base)
          (all-from-out "acmart/latex-utils.rkt")
@@ -34,29 +36,34 @@
 (module reader scribble/base/reader scribble/acmart #:wrapper1 (λ (t) (t)))
 
 (define-syntax (--#%module-begin stx)
-  (syntax-case stx ()
-    [(_ (options ...) ?e ...)
-     (with-syntax ([doc (format-id stx "doc")])
-       (quasisyntax/loc stx
-         (-#%module-begin doc (post-process (acmart-options options ...))
-                          () ?e ...)))]
-    [(mb string (options ...) ?e ...)
-     (begin
-       (unless (string? (syntax->datum #'string))
-         (error "assertion failed"))
-       #'(mb (options ...) ?e ...))]))
+  (syntax-parse stx
+    [(_ ?id . body)
+     (define/with-syntax doc (format-id stx "doc"))
+     (define/with-syntax (options ...) #'())
+     (let loop ([stuff #'body]
+                [flags (hash)])
+       (syntax-parse stuff
+         [(ws:str . rest)
+          #:when (regexp-match? #rx"^ *$" (syntax-e #'ws))
+          (loop #'rest flags)]
+         [(((~datum format) type:str) . rest)
+          (loop #'rest (hash-set flags 'format (string->symbol (syntax-e #'type))))]
+         [body
+          (quasisyntax/loc stx
+            (-#%module-begin doc (post-process #,(acmart-options flags))
+                             () . body))]))]))
 
-(define possible-formats
+(define-for-syntax possible-formats
   '(manuscript acmsmall acmlarge acmtog
     sigconf siggraph sigplan sigchi sigchi-a))
 
-(define (acmart-options
-         #:format (format 'manuscript)
-         #:screen (screen #f)
-         #:review (review #f)
-         #:natbib (natbib #t)
-         #:anonymous (anonymous #f)
-         #:authorversion (authorversion #f))
+(define-for-syntax (acmart-options options)
+  (define format (hash-ref options 'format 'manuscript))
+  (define screen (hash-ref options 'screen #f))
+  (define review (hash-ref options 'review #f))
+  (define natbib (hash-ref options 'natbib #t))
+  (define anonymous (hash-ref options 'anonymouse #f))
+  (define authorversion (hash-ref options 'authorversion #f))
   (letrec
       ([frob (λ (name val default acceptable printer)
                (assert (memq val acceptable))
@@ -69,7 +76,7 @@
        [opts
         (nest
          (apply comma-separated)
-         (filter identity)
+         (filter values)
          (list
           (frob "format" format 'manuscript possible-formats
                 (λ (name val) (symbol->string val)))
