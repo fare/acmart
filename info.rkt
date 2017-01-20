@@ -6,5 +6,5 @@
 (define pkg-desc "Port of the acmart 2016 style to Scribble")
 (define pkg-authors '(fare leif))
 
-(define scribblings '(("acmart.scrbl" () ("Scribble Libraries"))))
+;(define scribblings '(("acmart.scrbl" () ("Scribble Libraries"))))
 (define version "0.2017.0")
