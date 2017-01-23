@@ -3,4 +3,7 @@
 % NB: Currently disabled. In acmsmall, it is used by colbibentry-style (???)
 \newcommand{\acmartAutocolbibentry}[1]{\parbox[t]{\linewidth}{\hangindent=2em #1\vspace{1.0ex}}}
 
+% Do NOT use use ptm fonts, stay with what acmart.cls uses!
+\renewcommand{\renewrmdefault}{\relax}
+
 %%% End of scribble/acmart/style.tex

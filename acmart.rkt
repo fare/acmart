@@ -56,6 +56,8 @@
           (loop #'rest (hash-set flags 'annonymous #t))]
          [((~datum authorversion) . rest)
           (loop #'rest (hash-set flags 'authorversion #t))]
+         [((~datum no-natbib) . rest)
+          (loop #'rest (hash-set flags 'natbib #f))]
          [((~datum natbib) . rest)
           (loop #'rest (hash-set flags 'natbib #t))]
          [body
@@ -71,7 +73,7 @@
   (define format (hash-ref options 'format 'manuscript))
   (define screen (hash-ref options 'screen #f))
   (define review (hash-ref options 'review #f))
-  (define natbib (hash-ref options 'natbib #f))
+  (define natbib (hash-ref options 'natbib #t))
   (define anonymous (hash-ref options 'anonymous #f))
   (define authorversion (hash-ref options 'authorversion #f))
   (letrec
@@ -101,7 +103,7 @@
    doc
    (string->bytes/utf-8 (format #<<FORMAT
 %% Scribble needs these options, so provide before acmart
-\PassOptionsToPackage{warn}{textcomp}
+%\PassOptionsToPackage{warn}{textcomp}
 \PassOptionsToPackage{usenames,dvipsnames}{color}
 \documentclass~a{acmart}
 \bibliographystyle{plain}
