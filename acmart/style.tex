@@ -5,5 +5,9 @@
 
 % Do NOT use use ptm fonts, stay with what acmart.cls uses!
 \renewcommand{\renewrmdefault}{\relax}
+% Unhappily, this file is loaded too late,
+% so the above fails to prevent the redefinition of rmdefault.
+% But we can try to restore libertine as the rmdefault as below:
+\renewcommand{\rmdefault}{LinuxLibertineT-OsF}
 
 %%% End of scribble/acmart/style.tex
