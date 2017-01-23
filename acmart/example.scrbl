@@ -1,4 +1,4 @@
-#lang scribble/acmart [#:format 'acmsmall :review #t]
+#lang scribble/acmart @(format "acmsmall") @review @no-natbib
 
 @require[scriblib/footnote scriblib/figure "example-bib.rkt"]
 
@@ -8,7 +8,6 @@
 @acm-year{2010}
 @acm-month{3}
 @acm-doi{0000001.0000001}
-@acm-issn{1234-56789}
 
 @;@markboth["G. Zhou et al." "A Multifrequency MAC Specially Designed for WSN Applications"]
 
@@ -75,9 +74,7 @@ synchronization errors.
 @keywords{Wireless sensor networks, media access control,
 multi-channel, radio interference, time synchronization}
 
-@acm-format{Gang Zhou, Yafeng Wu, Ting Yan, Tian He, Chengdu Huang, John A. Stankovic,
-and Tarek F. Abdelzaher, 2010. A multifrequency MAC specially
-designed for  wireless sensor network applications.}
+@; @acm-format{Gang Zhou, Yafeng Wu, Ting Yan, Tian He, Chengdu Huang, John A. Stankovic, and Tarek F. Abdelzaher, 2010. A multifrequency MAC specially designed for  wireless sensor network applications.}
 
 @bottom-stuff{
 This work is supported by the National Science Foundation, under
