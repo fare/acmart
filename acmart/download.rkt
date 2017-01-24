@@ -17,10 +17,10 @@
          download-acmart-files)
 
 (define acmart-url
-  (let ((base (string-append "https://raw.githubusercontent.com/"
-                             "borisveytsman/acmart/"
-                             "d21923a0301a8f741cb8e8911d069e340acee76a" "/")))
-    (λ (x) (string-append base x))))
+  (let ((base (format "https://raw.githubusercontent.com/~a/~a/~a/"
+                      "borisveytsman" "acmart"
+                      "d21923a0301a8f741cb8e8911d069e340acee76a")))
+    (λ (x) (format "~a~a" base x))))
 
 (define acmart-ins-url (acmart-url "acmart.ins"))
 (define acmart-ins-sha256
