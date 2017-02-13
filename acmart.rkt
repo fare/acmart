@@ -8,7 +8,7 @@
 ;; - tables don't use the ACM's special commands
 
 (require
- ;"acmart/download.rkt"
+ "acmart/download.rkt"
  "acmart/latex-utils.rkt"
  racket/class
  racket/port
@@ -112,7 +112,7 @@
 FORMAT
 options))
    (collection-file-path "style.tex" "scribble" "acmart")
-   (list); acmart-cls-path acmart-bst-path)
+   (list acmart-cls-path acmart-bst-path)
    #f))
 
 (define-syntax extract-formal-argument
@@ -319,4 +319,4 @@ options))
      (super-new))))
 
 ;; Download necessary style files if necessary
-;; (download-acmart-files)
+(download-acmart-files)
