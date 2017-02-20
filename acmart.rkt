@@ -112,7 +112,7 @@
 FORMAT
 options))
    (collection-file-path "style.tex" "scribble" "acmart")
-   (list acmart-cls-path acmart-bst-path)
+   (list acmart-class-path acmart-bst-path)
    #f))
 
 (define-syntax extract-formal-argument
