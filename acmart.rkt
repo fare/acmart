@@ -52,8 +52,8 @@
           (loop #'rest (hash-set flags 'screen #t))]
          [((~datum review) . rest)
           (loop #'rest (hash-set flags 'review #t))]
-         [((~datum annonymous) . rest)
-          (loop #'rest (hash-set flags 'annonymous #t))]
+         [((~datum anonymous) . rest)
+          (loop #'rest (hash-set flags 'anonymous #t))]
          [((~datum authorversion) . rest)
           (loop #'rest (hash-set flags 'authorversion #t))]
          [((~datum no-natbib) . rest)
