@@ -16,7 +16,7 @@
 
 (define acmart-url
   "https://www.acm.org/binaries/content/assets/publications/consolidated-tex-template/acmart.zip")
-(define acmart-hash #"d2e70e6c9f1af2942ae75456d0cdda70")
+(define acmart-hash #"0fefa4718da2ab6a28017fc723e3bc51")
 
 (define acmart-base-path
   (build-path (find-system-path 'addon-dir) "acmart-style-files"))
