@@ -150,7 +150,7 @@
 (define-syntax DBG
   (syntax-rules ()
     [(_ tag-expr)
-     (DBG-helper tagval '() '() #f #f)]
+     (DBG-helper tag-expr '() '() #f #f)]
     [(_ tag-expr dbg-expr ... expr)
      (let ([tagval tag-expr]
            [thunk (λ () expr)])
