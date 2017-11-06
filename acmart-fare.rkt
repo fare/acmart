@@ -8,8 +8,8 @@
 ;; - tables don't use the ACM's special commands
 
 (require
- "acmart/download.rkt"
- "acmart/latex-utils.rkt"
+ "acmart-fare/download.rkt"
+ "acmart-fare/latex-utils.rkt"
  racket/class
  racket/port
  scribble/base scribble/decode
@@ -18,13 +18,13 @@
  scribble/private/defaults
  scribble/html-properties scribble/latex-properties
  setup/main-collects
- (for-syntax "acmart/latex-utils.rkt"
+ (for-syntax "acmart-fare/latex-utils.rkt"
              syntax/parse
              racket/base
              racket/syntax))
 
 (provide (all-from-out scribble/base)
-         (all-from-out "acmart/latex-utils.rkt")
+         (all-from-out "acmart-fare/latex-utils.rkt")
          (except-out (all-from-out scribble/doclang)
                      -#%module-begin)
          (rename-out [--#%module-begin #%module-begin])
@@ -33,7 +33,7 @@
          acmart-style)
 
 ;; Reader configuration for #lang
-(module reader scribble/base/reader scribble/acmart #:wrapper1 (λ (t) (t)))
+(module reader scribble/base/reader scribble/acmart-fare #:wrapper1 (λ (t) (t)))
 
 (define-syntax (--#%module-begin stx)
   (syntax-parse stx
@@ -60,6 +60,14 @@
           (loop #'rest (hash-set flags 'natbib #f))]
          [((~datum natbib) . rest)
           (loop #'rest (hash-set flags 'natbib #t))]
+         [((~datum 9pt) . rest)
+          (loop #'rest (hash-set flags 'fontsize "9pt"))]
+         [((~datum 10pt) . rest)
+          (loop #'rest (hash-set flags 'fontsize "10pt"))]
+         [((~datum 11pt) . rest)
+          (loop #'rest (hash-set flags 'fontsize "11pt"))]
+         [((~datum 12pt) . rest)
+          (loop #'rest (hash-set flags 'fontsize "12pt"))]
          [body
           (quasisyntax/loc stx
             (-#%module-begin doc (post-process #,(acmart-options flags))
@@ -76,6 +84,7 @@
   (define natbib (hash-ref options 'natbib #t))
   (define anonymous (hash-ref options 'anonymous #f))
   (define authorversion (hash-ref options 'authorversion #f))
+  (define fontsize (hash-ref options 'fontsize #f))
   (letrec
       ([frob (λ (name val default acceptable printer)
                (assert (memq val acceptable))
@@ -95,7 +104,8 @@
           (flag "review" review #f)
           (flag "natbib" natbib #f)
           (flag "anonymous" anonymous #f)
-          (flag "authorversion" authorversion #f)))])
+          (flag "authorversion" authorversion #f)
+          (list fontsize)))])
     (if (null? opts) "" (flatten-text "[" opts "]"))))
 
 (define ((post-process options) doc)
@@ -111,7 +121,7 @@
 \let\captionwidth\undefined
 FORMAT
 options))
-   (collection-file-path "style.tex" "scribble" "acmart")
+   (collection-file-path "style.tex" "scribble" "acmart-fare")
    (list acmart-class-path acmart-bst-path)
    #f))
 
@@ -207,26 +217,25 @@ options))
 ;; sigchi-a: sidebar marginfigure margintable
 
 (define-latex-wrappers
-  [printonly () "printonly"]
-  [screenonly () "screenonly"]
+  [printonly (begin) "printonly"]
+  [screenonly (begin) "screenonly"]
 
-  [anonsuppress () "anonsuppress"]
+  [anonsuppress (begin) "anonsuppress"]
 
-  [acknowledgments () "acks"]
-  [grant-sponsor () "grantsponsor" ([sponsor-id] name url)]
-  [grant-num () "grantnum" ([url] sponsor-id number)]
+  [acknowledgments (begin) "acks"]
+  [grant-sponsor (begin) "grantsponsor" ([sponsor-id] name url)]
+  [grant-num (begin) "grantnum" ([url] sponsor-id number)]
 
-  [cite-style () "citestyle" (x)]
-  [set-cite-style () "setcitestyle" (x)])
+  [cite-style (begin) "citestyle" (x)]
+  [set-cite-style (begin) "setcitestyle" (x)])
 
 (define acm-colors
   '("ACMBlue" "ACMYellow" "ACMOrange" "ACMRed"
     "ACMLightBlue" "ACMGreen" "ACMPurple" "ACMDarkBlue"))
 
-
 (define-latex-wrappers
-  [paragraph () "paragraph"]
-  [bottom-stuff () "bottomstuff"])
+  [paragraph (begin) "paragraph"]
+  [bottom-stuff (begin) "bottomstuff"])
 
 (define (terms . x)
   (pretitle (latex-command/mm "terms" x)))

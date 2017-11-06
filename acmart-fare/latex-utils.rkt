@@ -4,6 +4,12 @@
 
 (provide (all-defined-out))
 
+;;; Magic nest macro
+(define-syntax nest
+  (syntax-rules ()
+    ((_ x) x)
+    ((_ outer ... (prefix ...) inner) (nest outer ... (prefix ... inner)))))
+
 ;; Consider x as a tree where nodes are cons cells and leaves are either
 ;; strings or ignorable junk, and concatenate all the strings together.
 (define (flatten-text . x)
@@ -126,14 +132,6 @@
 ;;; Separate a list with commas
 (define (comma-separated . list)
   (apply separated-list ", " list))
-
-;;; Magic nest macro
-(define-syntax nest
-  (syntax-rules ()
-    [(nest) #f]
-    [(nest () x ...) (nest x ...)]
-    [(nest (x ...) y z ...) (x ... (nest y z ...))]
-    [(nest x) x]))
 
 ;;; Debug macro for print-debugging
 ;; tag is typically a constant string or keyword to identify who is printing,

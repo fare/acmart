@@ -1,4 +1,4 @@
-#lang scribble/acmart @(format "acmsmall") @review @no-natbib
+#lang scribble/acmart-fare @(format "acmsmall") @review @no-natbib
 
 @require[scriblib/footnote scriblib/figure "example-bib.rkt"]
 

@@ -15,13 +15,13 @@
          download-acmart-files)
 
 (define acmart-url
-  "https://www.acm.org/binaries/content/assets/publications/consolidated-tex-template/acmart.zip")
-(define acmart-hash #"0fefa4718da2ab6a28017fc723e3bc51")
+  "https://www.acm.org/binaries/content/assets/publications/consolidated-tex-template/acmart-master.zip")
+(define acmart-hash #"0c29f2a01d7dce0878fd8baf60002c23") ; 1.48
 
 (define acmart-base-path
   (build-path (find-system-path 'addon-dir) "acmart-style-files"))
-(define acmart-class-path (build-path acmart-base-path "acmart" "acmart.cls"))
-(define acmart-bst-path (build-path acmart-base-path "acmart" "ACM-Reference-Format.bst"))
+(define acmart-class-path (build-path acmart-base-path "acmart-master" "acmart.cls"))
+(define acmart-bst-path (build-path acmart-base-path "acmart-master" "ACM-Reference-Format.bst"))
 
 ;; Download acmsmall class file to the add-on directory
 (define (download-acmart-files)
@@ -46,6 +46,5 @@
     (unzip tmp (make-filesystem-entry-reader #:dest acmart-base-path))
 
     ;; Invoke the Makefile in that directory...
-    (parameterize ([current-directory (build-path acmart-base-path "acmart")])
+    (parameterize ([current-directory (build-path acmart-base-path "acmart-master")])
       (system "pdflatex acmart.ins" #:set-pwd? #t))))
-    

@@ -2,7 +2,7 @@
 
 (require scriblib/autobib scribble/core (only-in scribble/manual emph)
          scribble/decode scribble/base
-         (only-in scribble/acmart acmart-style))
+         (only-in scribble/acmart-fare acmart-style))
 
 (provide (all-defined-out))
 
