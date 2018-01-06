@@ -37,6 +37,10 @@
   ;; No need to call flatten-text, I hope
   (make-element raw-style x))
 
+;; Raw output
+(define ($ . x) (raw-mode "$" x "$"))
+
+
 ;; Q: Should we be using (make-multiarg-element style (list x1 x2 x3))
 ;; when there are several (mandatory) arguments?
 
